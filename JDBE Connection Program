@@ -1,0 +1,115 @@
+package jdbcss;
+
+import java.util.Scanner;
+import java.sql.Connection;
+
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
+
+public class jdbconn {
+
+			public static Connection cm=null;
+			public static PreparedStatement ps=null;
+			
+			public static void main(String[] args) throws ClassNotFoundException, SQLException {
+
+				jdbconn nw = new jdbconn();
+				nw.sca();
+
+			}
+			
+			
+			public void sca() throws ClassNotFoundException, SQLException {
+				Scanner sc = new Scanner(System.in);
+				System.out.println("Enter 1 for Insert and 2 for Delete");
+				
+		        int n =sc.nextInt();
+				
+				switch(n)
+				{
+				case 1:
+					insert();
+					break;
+				case 2:
+					delete();
+					break;
+			    default:
+			    	System.out.println("Enter a correct number");
+			    	sca();
+				}
+					 sc.close();
+				
+			}
+
+			public static void DBConnection()throws ClassNotFoundException, SQLException
+			{
+		        Class.forName("com.mysql.cj.jdbc.Driver");
+				
+				
+				String path="jdbc:mysql://localhost:3306/test?user=root&password=Karthi@31";
+				
+				cm=DriverManager.getConnection(path);
+				
+			}
+			
+			
+		//Insert  Database Values
+
+		public static void insert()throws ClassNotFoundException, SQLException
+		{
+		DBConnection();
+		Scanner sn =new Scanner(System.in);
+		System.out.println("Enter the Number of Employee");
+		int emp = sn.nextInt();
+		
+		for(int i=1;i<=emp;i++)
+		{
+			System.out.println("Enter the Empid");
+			int Empid = sn.nextInt();
+			System.out.println("Enter the Empname");
+			sn.nextLine();
+			String Empname =sn.nextLine();
+			System.out.println("Enter the Salary");
+			long Salary = sn.nextLong();
+		
+		String ins="insert into Regtable values(?,?,?)";
+        
+		ps=cm.prepareStatement(ins);
+		ps.setInt(1,Empid);
+        ps.setString(2,Empname);
+        ps.setLong(3,Salary);
+		int res=ps.executeUpdate();
+
+		System.out.println("Inserted:"+res);
+		sn.close();
+		}
+
+		}
+		 
+		
+		//Delete database Value using employeid
+		
+		public static void delete()throws ClassNotFoundException, SQLException
+		{
+			DBConnection();
+			Scanner dc = new Scanner(System.in);
+			System.out.println("Enter the Employ Id For deletion");
+			int nu =dc.nextInt();
+			
+			String del="delete from Regtable where Empid=?";
+			
+			ps=cm.prepareStatement(del);
+			ps.setInt(1, nu);
+			
+			int res=ps.executeUpdate();
+			
+			System.out.println("Deleted:"+res);
+			dc.close();
+			
+		}
+
+	}
+
+
